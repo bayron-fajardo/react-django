@@ -2,11 +2,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { createTask, deleteTask, updateTask, getTask } from "../api/tasks.api";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 export function TaskFormPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
 
   const navigate = useNavigate();
@@ -15,21 +17,36 @@ export function TaskFormPage() {
 
   const onSubmit = handleSubmit(async (data) => {
     if (params.id) {
-      //await updateTask(data);
+      await updateTask(params.id, data);
+      toast.success("Tarea Actualizada", {
+        position: "bottom-right",
+        style: {
+          background: '#101010',
+          color: '#ffffff'
+        }
+      });
     } else {
       await createTask(data);
+      toast.success("Tarea creada", {
+        position: "bottom-right",
+        style: {
+          background: '#101010',
+          color: '#ffffff'
+        }
+      });
     }
     navigate("/tasks");
   });
 
   useEffect(() => {
-  async function loadTaks(){
-    if (params.id) {
-      const res = await getTask(params.id);
-      console.log(res);
+    async function loadTaks() {
+      if (params.id) {
+        const { data } = await getTask(params.id);
+        setValue("title", data.title);
+        setValue("description", data.description);
+      }
     }
-  }
-  loadTaks()
+    loadTaks();
   }, []);
   return (
     <div>
