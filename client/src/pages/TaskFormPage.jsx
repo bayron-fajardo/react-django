@@ -49,39 +49,53 @@ export function TaskFormPage() {
     loadTaks();
   }, []);
   return (
-    <div>
+    <div className="max-w-xl mx-auto">
       <form onSubmit={onSubmit}>
         <input
           type="text"
           placeholder="title"
           {...register("title", { required: true })}
+          className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
         />
         {errors.title && <span>title is required</span>}
         <textarea
           rows="3"
           placeholder="Description"
           {...register("description", { required: true })}
+          className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
         ></textarea>
         {errors.description && <span>description is required</span>}
 
-        <div>
-          <input type="checkbox" {...register("done")} />
+        <div className="flex justify-end font-bold  ">
+
+          ¿Realizada?
+          <input type="checkbox" {...register("done")}  className=""/>
         </div>
-        <button>Save</button>
+        <button className="bg-indigo-500 p-3 rounded-lg block w-full mt-3">Save</button>
       </form>
 
       {params.id && (
-        <button
+        <div className="flex justify-end">
+          <button
+          className="bg-red-500 p-3 rounded-lg w-48 mt-3"
           onClick={async () => {
             const accepted = window.confirm("Estas seguro?");
             if (accepted) {
               await deleteTask(params.id);
+              toast.success("Tarea Eliminada", {
+                position: "bottom-right",
+                style: {
+                  background: '#101010',
+                  color: '#ffffff'
+                }
+              });
               navigate("/tasks");
             }
           }}
         >
           Delete
         </button>
+        </div>
       )}
     </div>
   );
